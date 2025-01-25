@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Image Slider with Pagination</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color:rgb(243, 247, 249);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .slider-container {
+            position: relative;
+            width: 80%;
+            max-width: 900px;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .slider-wrapper {
+            display: flex;
+            transition: transform 1s ease-in-out;
+        }
+
+        .slide {
+            min-width: 100%;
+            transition: opacity 1s ease-in-out;
+            position: relative;
+        }
+
+        .slide img {
+            width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .caption {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 18px;
+        }
+        .caption p{
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: small;
+        }
+
+        .navigation {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            padding: 0 10px;
+        }
+
+        .prev, .next {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            font-size: 30px;
+            border: none;
+            padding: 10px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .prev:hover, .next:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        /* Pagination */
+        .pagination {
+            position: absolute;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .pagination span {
+            width: 12px;
+            height: 12px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .pagination .active {
+            background-color: #fff;
+            width: 18px;
+            height: 18px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .slider-container {
+                width: 90%;
+            }
+
+            .caption {
+                font-size: 16px;
+                bottom: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="slider-container">
+        <div class="slider-wrapper">
+            <div class="slide">
+                <img src="images2/daan-huttinga-078605JTSOw-unsplash.jpg" alt="Image 1">
+                <div class="caption">
+                    <h2>Aegean</h2>
+                    <p>-"Reflection of horizon"</p>
+                    
+                </div>
+            </div>
+            <div class="slide">
+                <img src="images2/lopez-robin-apax4M-4kFI-unsplash.jpg" alt="Image 2">
+                <div class="caption">
+                    <h2>Azura</h2>
+                    <p>-"Chasing Horizons"</p>
+                </div>
+            </div>
+            <div class="slide">
+                <img src="images2/pedro-monteiro-HfIex7qwTlI-unsplash.jpg" alt="Image 3">
+                <div class="caption">
+                    <h2>Cerulean</h2>
+                    <p>-"Greek for strong Sea"</p>
+                </div>
+            </div>
+            <div class="slide">
+                <img src="images2/rowan-heuvel-U6t80TWJ1DM-unsplash.jpg" alt="Image 4">
+                <div class="caption">
+                    <h2>Pelagia</h2>
+                    <p>-"The largest enclosed inland body"</p></div>
+            </div>
+        </div>
+    
+
+        <div class="navigation">
+            <button class="prev">&#10094;</button>
+            <button class="next">&#10095;</button>
+        </div>
+
+        <div class="pagination">
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+            <span class="dot"></span>
+        </div>
+    </div>
+
+    <script>
+        const slides = document.querySelectorAll('.slide');
+        const prevButton = document.querySelector('.prev');
+        const nextButton = document.querySelector('.next');
+        const paginationDots = document.querySelectorAll('.pagination span');
+        let currentIndex = 0;
+
+        // Function to update the slider
+        function updateSlider() {
+            const sliderWrapper = document.querySelector('.slider-wrapper');
+            sliderWrapper.style.transform = `translateX(-${currentIndex * 100}%)`;
+
+            // Update the pagination dots
+            paginationDots.forEach((dot, index) => {
+                dot.classList.remove('active');
+                if (index === currentIndex) {
+                    dot.classList.add('active');
+                }
+            });
+        }
+
+        // Auto-Slide functionality
+        setInterval(() => {
+            currentIndex = (currentIndex + 1) % slides.length;
+            updateSlider();
+        }, 8000);
+
+        // Previous Button Click
+        prevButton.addEventListener('click', () => {
+            currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+            updateSlider();
+        });
+
+        // Next Button Click
+        nextButton.addEventListener('click', () => {
+            currentIndex = (currentIndex + 1) % slides.length;
+            updateSlider();
+        });
+
+        // Pagination Dot Click
+        paginationDots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                currentIndex = index;
+                updateSlider();
+            });
+        });
+
+        // Initialize slider
+        updateSlider();
+    </script>
+</body>
+</html>
